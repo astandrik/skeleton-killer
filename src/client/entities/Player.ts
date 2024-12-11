@@ -1,12 +1,10 @@
 import { Entity } from "../core/Entity";
 import { Scene } from "phaser";
 import { NetworkManager } from "../utils/NetworkManager";
-import {
-  PhysicsComponent,
-  NetworkComponent,
-  HealthComponent,
-  CombatComponent,
-} from "../core/Component";
+import { PhysicsComponent } from "../core/PhysicsComponent";
+import { NetworkComponent } from "../core/NetworkComponent";
+import { HealthComponent } from "../core/HealthComponent";
+import { CombatComponent } from "../core/CombatComponent";
 import { InputComponent } from "../core/InputComponent";
 
 export class Player extends Entity {

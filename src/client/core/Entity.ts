@@ -1,5 +1,5 @@
 import { Scene } from "phaser";
-import { Component } from "./Component";
+import { Component } from "./BaseComponent";
 
 export abstract class Entity {
   protected sprite: Phaser.GameObjects.Sprite;

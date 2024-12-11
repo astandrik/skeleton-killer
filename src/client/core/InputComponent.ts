@@ -1,9 +1,7 @@
-import {
-  Component,
-  NetworkComponent,
-  PhysicsComponent,
-  CombatComponent,
-} from "./Component";
+import { Component } from "./BaseComponent";
+import { NetworkComponent } from "./NetworkComponent";
+import { PhysicsComponent } from "./PhysicsComponent";
+import { Entity } from "./Entity";
 
 export class InputComponent extends Component {
   public readonly name = "input";
@@ -101,7 +99,7 @@ export class InputComponent extends Component {
 
     // Find nearby skeletons and attack them
     const scene = this.entity["scene"];
-    scene.children.list.forEach((child) => {
+    scene.children.list.forEach((child: any) => {
       if (child.getData("entityType") === "skeleton") {
         const skeletonEntity = child.getData("entity");
         if (skeletonEntity) {

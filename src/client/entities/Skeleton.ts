@@ -1,10 +1,8 @@
 import { Entity } from "../core/Entity";
 import { Scene } from "phaser";
-import {
-  HealthComponent,
-  PhysicsComponent,
-  FollowComponent,
-} from "../core/Component";
+import { HealthComponent } from "../core/HealthComponent";
+import { PhysicsComponent } from "../core/PhysicsComponent";
+import { FollowComponent } from "../core/FollowComponent";
 
 export class Skeleton extends Entity {
   constructor(scene: Scene, id: string, x: number, y: number) {
