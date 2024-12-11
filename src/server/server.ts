@@ -98,7 +98,7 @@ io.on("connection", (socket) => {
 
 // Spawn skeletons periodically
 setInterval(() => {
-  if (skeletons.size < 500) {
+  if (skeletons.size < 100) {
     const skeleton: Skeleton = {
       id: `skeleton-${Date.now()}`,
       x: Math.random() * 800,
@@ -108,7 +108,7 @@ setInterval(() => {
     skeletons.set(skeleton.id, skeleton);
     io.emit("skeletonSpawned", skeleton);
   }
-}, 500);
+}, 1000);
 
 const PORT = process.env.PORT || 3000;
 httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));

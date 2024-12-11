@@ -18,8 +18,9 @@ export class MainScene extends Scene {
   private healthBar?: HealthBar;
   private lastPlayerState: boolean = false;
   private lastDamageTime: number = 0;
-  private readonly DAMAGE_COOLDOWN: number = 500; // 500ms cooldown between damage
+  private readonly DAMAGE_COOLDOWN: number = 500;
   private readonly SKELETON_DAMAGE: number = 10;
+  private assetsLoaded: boolean = false;
 
   constructor() {
     super({ key: "MainScene" });
@@ -27,20 +28,56 @@ export class MainScene extends Scene {
 
   preload() {
     console.log("MainScene preload started");
+
+    // Create and store TextureManager in game registry
+    this.textureManager = new TextureManager(this);
+    this.game.registry.set("textureManager", this.textureManager);
+
+    // Show loading progress
+    const progressBar = this.add.graphics();
+    const progressBox = this.add.graphics();
+    progressBox.fillStyle(0x222222, 0.8);
+    progressBox.fillRect(240, 270, 320, 50);
+
+    this.load.on("progress", (value: number) => {
+      progressBar.clear();
+      progressBar.fillStyle(0xffffff, 1);
+      progressBar.fillRect(250, 280, 300 * value, 30);
+    });
+
+    this.load.on("complete", () => {
+      console.log("All assets loaded");
+      progressBar.destroy();
+      progressBox.destroy();
+      this.assetsLoaded = true;
+      this.initializeGame();
+    });
+
+    // Start loading assets
+    this.textureManager.loadTextures();
   }
 
-  create() {
-    console.log("MainScene create started");
+  private initializeGame() {
+    console.log("Initializing game...");
 
-    // Initialize managers
-    this.textureManager = new TextureManager(this);
-    this.networkHandler = new NetworkHandler(this);
-
-    // Create game textures
+    // Create textures and animations
     this.textureManager.createGameTextures();
 
     // Enable physics
     this.physics.world.setBounds(0, 0, 800, 600);
+
+    // Initialize network and store in registry
+    this.networkHandler = new NetworkHandler(this);
+    this.game.registry.set("networkHandler", this.networkHandler);
+
+    console.log("Game initialization complete");
+  }
+
+  create() {
+    console.log("MainScene create started");
+    if (!this.assetsLoaded) {
+      console.log("Waiting for assets to load...");
+    }
   }
 
   private handlePlayerDamage(player: Player) {
@@ -66,7 +103,9 @@ export class MainScene extends Scene {
   }
 
   update(time: number, delta: number) {
-    const localPlayer = this.networkHandler.getLocalPlayer();
+    if (!this.assetsLoaded) return;
+
+    const localPlayer = this.networkHandler?.getLocalPlayer();
     const hasPlayer = !!localPlayer;
 
     // Handle player initialization
@@ -104,7 +143,7 @@ export class MainScene extends Scene {
     }
 
     // Update all skeletons
-    const skeletons = this.networkHandler.getSkeletons();
+    const skeletons = this.networkHandler?.getSkeletons() || new Map();
     skeletons.forEach((skeleton: Skeleton) => {
       skeleton.update(delta);
     });

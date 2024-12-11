@@ -2,6 +2,7 @@ import { Component } from "./BaseComponent";
 import { NetworkComponent } from "./NetworkComponent";
 import { PhysicsComponent } from "./PhysicsComponent";
 import { Entity } from "./Entity";
+import { NetworkHandler } from "../utils/NetworkHandler";
 
 export class InputComponent extends Component {
   public readonly name = "input";
@@ -9,6 +10,7 @@ export class InputComponent extends Component {
   private attackKey: Phaser.Input.Keyboard.Key;
   private speed: number;
   private lastDirection: "left" | "right" | "up" | "down" = "right";
+  private readonly ATTACK_RANGE = 50;
 
   constructor(
     cursors: Phaser.Types.Input.Keyboard.CursorKeys,
@@ -79,7 +81,6 @@ export class InputComponent extends Component {
     let attackX = playerPos.x;
     let attackY = playerPos.y;
     const SPRITE_SIZE = 32;
-    const ATTACK_RANGE = 100; // Attack range in pixels
 
     // Position the attack based on direction
     switch (this.lastDirection) {
@@ -97,29 +98,15 @@ export class InputComponent extends Component {
         break;
     }
 
-    // Find nearby skeletons and attack them
-    const scene = this.entity["scene"];
-    scene.children.list.forEach((child: any) => {
-      if (child.getData("entityType") === "skeleton") {
-        const skeletonEntity = child.getData("entity");
-        if (skeletonEntity) {
-          const skeletonPos = skeletonEntity.getPosition();
-          const distance = Phaser.Math.Distance.Between(
-            playerPos.x,
-            playerPos.y,
-            skeletonPos.x,
-            skeletonPos.y
-          );
+    // Get NetworkHandler from scene registry to check skeleton hits
+    const networkHandler = this.entity["scene"].game.registry.get(
+      "networkHandler"
+    ) as NetworkHandler;
+    if (networkHandler) {
+      networkHandler.checkSkeletonHits(attackX, attackY);
+    }
 
-          if (distance <= ATTACK_RANGE) {
-            // Call takeDamage directly on skeleton
-            skeletonEntity.takeDamage();
-            console.log("Attacking skeleton at distance:", distance);
-          }
-        }
-      }
-    });
-
+    // Network update for attack
     const network = this.entity.getComponent<NetworkComponent>("network");
     if (network) {
       network.networkManager.emitPlayerAttack({
@@ -129,7 +116,10 @@ export class InputComponent extends Component {
       });
     }
 
+    // Show attack effect
     this.showAttackEffect(attackX, attackY);
+
+    // No screen shake on attack - only on damage
   }
 
   private showAttackEffect(x: number, y: number): void {

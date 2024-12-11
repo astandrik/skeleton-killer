@@ -1,17 +1,41 @@
 import { Scene } from "phaser";
 import { Component } from "./BaseComponent";
+import { EntityType } from "../config/assets";
+import { TextureManager } from "../utils/TextureManager";
 
 export abstract class Entity {
   protected sprite: Phaser.GameObjects.Sprite;
   protected scene: Scene;
   protected components: Map<string, Component>;
   public readonly id: string;
+  protected entityType: EntityType;
 
-  constructor(scene: Scene, id: string, x: number, y: number, texture: string) {
+  constructor(
+    scene: Scene,
+    id: string,
+    x: number,
+    y: number,
+    entityType: EntityType
+  ) {
     this.scene = scene;
     this.id = id;
+    this.entityType = entityType;
     this.components = new Map();
-    this.sprite = scene.add.sprite(x, y, texture);
+
+    // Get texture configuration
+    const textureManager = scene.game.registry.get(
+      "textureManager"
+    ) as TextureManager;
+    const config = textureManager.getEntityConfig(entityType);
+
+    // Create sprite with default texture
+    const textureKey = (config?.defaultTexture || entityType).toString();
+    this.sprite = scene.add.sprite(x, y, textureKey);
+
+    // Apply scale from config
+    if (config?.scale) {
+      this.sprite.setScale(config.scale);
+    }
 
     // Set entity reference on sprite for collision detection
     this.sprite.setData("entity", this);
@@ -60,5 +84,9 @@ export abstract class Entity {
     this.components.forEach((component) => component.destroy());
     this.components.clear();
     this.sprite.destroy();
+  }
+
+  public getEntityType(): EntityType {
+    return this.entityType;
   }
 }

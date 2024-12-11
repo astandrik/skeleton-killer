@@ -7,7 +7,8 @@
   "scripts": {
     "build:client": "esbuild src/client/scenes/MainScene.ts --bundle --format=iife --outfile=dist/client/bundle.js --platform=browser --target=es2020 --global-name=Game && cp src/client/index.html dist/client/",
     "build:server": "tsc -p tsconfig.json",
-    "build": "rm -rf dist && mkdir -p dist/client/assets/sprites && npm run build:server && npm run build:client",
+    "copy:assets": "cp -r src/client/assets dist/client/",
+    "build": "rm -rf dist && mkdir -p dist/client/assets/sprites && npm run build:server && npm run build:client && npm run copy:assets",
     "start": "node dist/server/server.js",
     "dev": "npm run build && nodemon --watch 'src/**/*.ts' --exec 'node --loader ts-node/esm' src/server/server.ts"
   },
