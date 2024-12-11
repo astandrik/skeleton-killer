@@ -12,6 +12,9 @@ export abstract class Entity {
     this.id = id;
     this.components = new Map();
     this.sprite = scene.add.sprite(x, y, texture);
+
+    // Set entity reference on sprite for collision detection
+    this.sprite.setData("entity", this);
   }
 
   public addComponent(component: Component): void {
@@ -39,6 +42,18 @@ export abstract class Entity {
   public setPosition(x: number, y: number): void {
     this.sprite.x = x;
     this.sprite.y = y;
+  }
+
+  public getSprite(): Phaser.GameObjects.Sprite {
+    return this.sprite;
+  }
+
+  public setTint(color: number): void {
+    this.sprite.setTint(color);
+  }
+
+  public clearTint(): void {
+    this.sprite.clearTint();
   }
 
   public destroy(): void {

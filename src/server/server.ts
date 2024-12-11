@@ -108,7 +108,7 @@ setInterval(() => {
     skeletons.set(skeleton.id, skeleton);
     io.emit("skeletonSpawned", skeleton);
   }
-}, 1000);
+}, 500);
 
 const PORT = process.env.PORT || 3000;
 httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));

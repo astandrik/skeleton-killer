@@ -8,8 +8,16 @@ export class PhysicsComponent extends Component {
   public initialize(entity: Entity): void {
     super.initialize(entity);
     if (entity["scene"] && entity["scene"].physics && entity["sprite"]) {
+      // Enable physics on the sprite
       entity["scene"].physics.add.existing(entity["sprite"]);
       this.body = entity["sprite"].body as Phaser.Physics.Arcade.Body;
+
+      // Enable collision detection
+      if (this.body) {
+        this.body.setCollideWorldBounds(true);
+        this.body.onOverlap = true;
+        this.body.setSize(32, 32); // Set collision box size
+      }
     }
   }
 
