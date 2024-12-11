@@ -1,6 +1,10 @@
 import { Entity } from "../core/Entity";
 import { Scene } from "phaser";
-import { HealthComponent } from "../core/Component";
+import {
+  HealthComponent,
+  PhysicsComponent,
+  FollowComponent,
+} from "../core/Component";
 
 export class Skeleton extends Entity {
   constructor(scene: Scene, id: string, x: number, y: number) {
@@ -11,8 +15,21 @@ export class Skeleton extends Entity {
   }
 
   private setupComponents(): void {
+    // Add physics component for movement
+    this.addComponent(new PhysicsComponent());
+
+    // Add follow component with slow movement speed
+    this.addComponent(new FollowComponent(40, 30)); // Speed: 40, minDistance: 30
+
     // Add health component with default skeleton health
     this.addComponent(new HealthComponent(50));
+  }
+
+  public setTarget(target: Entity): void {
+    const followComponent = this.getComponent<FollowComponent>("follow");
+    if (followComponent) {
+      followComponent.setTarget(target);
+    }
   }
 
   public takeDamage(): void {

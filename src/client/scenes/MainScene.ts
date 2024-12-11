@@ -1,6 +1,7 @@
 import { Scene } from "phaser";
 import { TextureManager } from "../utils/TextureManager";
 import { NetworkHandler } from "../utils/NetworkHandler";
+import { Skeleton } from "../entities/Skeleton";
 
 declare global {
   interface Window {
@@ -18,7 +19,6 @@ export class MainScene extends Scene {
 
   preload() {
     console.log("MainScene preload started");
-    // Input initialization is now handled by InputComponent
   }
 
   create() {
@@ -37,6 +37,12 @@ export class MainScene extends Scene {
     if (localPlayer) {
       localPlayer.update(delta);
     }
+
+    // Update all skeletons
+    const skeletons = this.networkHandler.getSkeletons();
+    skeletons.forEach((skeleton: Skeleton) => {
+      skeleton.update(delta);
+    });
   }
 }
 

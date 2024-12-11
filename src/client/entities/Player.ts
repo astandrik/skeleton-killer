@@ -20,12 +20,12 @@ export class Player extends Entity {
     networkManager: NetworkManager,
     isLocalPlayer: boolean = false
   ) {
-    super(scene, id, x, y, "player");
+    super(scene, id, x, y, "knight");
     this.isLocalPlayer = isLocalPlayer;
 
     // Set player tint for remote players
     if (!isLocalPlayer) {
-      this.sprite.setTint(0x0000ff);
+      this.sprite.setTint(0x4444ff);
     }
 
     // Add components

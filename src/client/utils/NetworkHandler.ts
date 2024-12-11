@@ -87,10 +87,19 @@ export class NetworkHandler {
 
   private handleSkeletonSpawned(skeleton: SkeletonInfo) {
     console.log("Creating skeleton");
-    this.skeletons.set(
+    const newSkeleton = new Skeleton(
+      this.scene,
       skeleton.id,
-      new Skeleton(this.scene, skeleton.id, skeleton.x, skeleton.y)
+      skeleton.x,
+      skeleton.y
     );
+
+    // Set local player as target if available
+    if (this.localPlayer) {
+      newSkeleton.setTarget(this.localPlayer);
+    }
+
+    this.skeletons.set(skeleton.id, newSkeleton);
   }
 
   private handleSkeletonHit(data: { id: string; health: number }) {
@@ -153,5 +162,9 @@ export class NetworkHandler {
 
   getNetworkManager(): NetworkManager {
     return this.networkManager;
+  }
+
+  getSkeletons(): Map<string, Skeleton> {
+    return this.skeletons;
   }
 }

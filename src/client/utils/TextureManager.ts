@@ -6,57 +6,70 @@ export class TextureManager {
   }
 
   createGameTextures() {
-    this.createPlayerTexture();
+    this.createKnightTexture();
     this.createSkeletonTexture();
     this.createSlashTextures();
     this.createSlashAnimation();
   }
 
-  private createPlayerTexture() {
-    const playerGraphics = this.scene.add.graphics();
-    playerGraphics.fillStyle(0x00ff00);
-    playerGraphics.fillRect(0, 0, 32, 32);
-    playerGraphics.generateTexture("player", 32, 32);
-    playerGraphics.destroy();
+  private createKnightTexture() {
+    const graphics = this.scene.add.graphics();
+
+    // Body
+    graphics.lineStyle(2, 0x4444ff);
+    graphics.fillStyle(0x6666ff);
+    graphics.beginPath();
+    graphics.arc(16, 16, 12, 0, Math.PI * 2);
+    graphics.closePath();
+    graphics.strokePath();
+    graphics.fillPath();
+
+    // Sword
+    graphics.lineStyle(2, 0xcccccc);
+    graphics.beginPath();
+    graphics.moveTo(24, 8);
+    graphics.lineTo(28, 4);
+    graphics.strokePath();
+
+    graphics.generateTexture("knight", 32, 32);
+    graphics.destroy();
   }
 
   private createSkeletonTexture() {
-    const skeletonGraphics = this.scene.add.graphics();
-    skeletonGraphics.fillStyle(0x808080);
-    skeletonGraphics.fillRect(0, 0, 32, 32);
-    skeletonGraphics.generateTexture("skeleton", 32, 32);
-    skeletonGraphics.destroy();
+    const graphics = this.scene.add.graphics();
+
+    // Body
+    graphics.lineStyle(2, 0xcccccc);
+    graphics.fillStyle(0xdddddd);
+    graphics.beginPath();
+    graphics.arc(16, 16, 12, 0, Math.PI * 2);
+    graphics.closePath();
+    graphics.strokePath();
+    graphics.fillPath();
+
+    // Eyes
+    graphics.fillStyle(0xff0000);
+    graphics.fillCircle(12, 14, 2);
+    graphics.fillCircle(20, 14, 2);
+
+    graphics.generateTexture("skeleton", 32, 32);
+    graphics.destroy();
   }
 
   private createSlashTextures() {
-    // Create five frames for the slash animation
     for (let i = 0; i < 5; i++) {
-      const frameGraphics = this.scene.add.graphics();
-      frameGraphics.lineStyle(2, 0xffffff); // Thin white line
+      const graphics = this.scene.add.graphics();
+      const progress = i / 4; // 0 to 1
+      const startAngle = -Math.PI / 4;
+      const endAngle = startAngle + (Math.PI / 2) * progress;
 
-      // All slashes start from center-left (player position)
-      const startX = 0;
-      const startY = 16;
-      const length = 32;
+      graphics.lineStyle(3, 0xffffff);
+      graphics.beginPath();
+      graphics.arc(16, 16, 16, startAngle, endAngle);
+      graphics.strokePath();
 
-      // Calculate angle for each frame (from -45° to +45°)
-      const startAngle = -45;
-      const angleStep = 22.5; // 90° total range divided into 4 steps
-      const currentAngle = startAngle + angleStep * i;
-
-      // Convert angle to radians and calculate end point
-      const angleRad = (currentAngle * Math.PI) / 180;
-      const endX = startX + length * Math.cos(angleRad);
-      const endY = startY + length * Math.sin(angleRad);
-
-      // Draw the slash
-      frameGraphics.beginPath();
-      frameGraphics.moveTo(startX, startY);
-      frameGraphics.lineTo(endX, endY);
-      frameGraphics.strokePath();
-
-      frameGraphics.generateTexture(`slash${i}`, 32, 32);
-      frameGraphics.destroy();
+      graphics.generateTexture(`slash${i}`, 32, 32);
+      graphics.destroy();
     }
   }
 
@@ -70,7 +83,7 @@ export class TextureManager {
         { key: "slash3" },
         { key: "slash4" },
       ],
-      frameRate: 45, // Fast animation for smooth arc
+      frameRate: 30,
       repeat: 0,
     });
   }
