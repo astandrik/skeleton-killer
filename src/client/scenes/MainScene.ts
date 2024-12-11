@@ -1,4 +1,4 @@
-import { BaseScene } from "./BaseScene";
+import { Scene } from "phaser";
 import { TextureManager } from "../utils/TextureManager";
 import { NetworkHandler } from "../utils/NetworkHandler";
 
@@ -8,19 +8,17 @@ declare global {
   }
 }
 
-export class MainScene extends BaseScene {
+export class MainScene extends Scene {
   private textureManager!: TextureManager;
   private networkHandler!: NetworkHandler;
-  protected cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
-  protected attackKey!: Phaser.Input.Keyboard.Key;
 
   constructor() {
-    super("MainScene");
+    super({ key: "MainScene" });
   }
 
   preload() {
-    super.initializeInput();
     console.log("MainScene preload started");
+    // Input initialization is now handled by InputComponent
   }
 
   create() {
@@ -34,10 +32,10 @@ export class MainScene extends BaseScene {
     this.textureManager.createGameTextures();
   }
 
-  update() {
+  update(time: number, delta: number) {
     const localPlayer = this.networkHandler.getLocalPlayer();
     if (localPlayer) {
-      localPlayer.update(this.cursors, this.attackKey);
+      localPlayer.update(delta);
     }
   }
 }

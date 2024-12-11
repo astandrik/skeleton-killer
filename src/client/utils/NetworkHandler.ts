@@ -41,6 +41,7 @@ export class NetworkHandler {
         console.log("Creating local player");
         this.localPlayer = new Player(
           this.scene,
+          player.id,
           player.x,
           player.y,
           this.networkManager,
@@ -50,7 +51,13 @@ export class NetworkHandler {
         console.log("Creating remote player");
         this.otherPlayers.set(
           player.id,
-          new Player(this.scene, player.x, player.y, this.networkManager)
+          new Player(
+            this.scene,
+            player.id,
+            player.x,
+            player.y,
+            this.networkManager
+          )
         );
       }
     });
@@ -59,7 +66,7 @@ export class NetworkHandler {
   private handlePlayerJoined(player: PlayerInfo) {
     this.otherPlayers.set(
       player.id,
-      new Player(this.scene, player.x, player.y, this.networkManager)
+      new Player(this.scene, player.id, player.x, player.y, this.networkManager)
     );
   }
 
@@ -103,7 +110,6 @@ export class NetworkHandler {
       console.log("Creating attack effect");
       const slash = this.scene.add.sprite(attackInfo.x, attackInfo.y, "slash0");
 
-      // Set origin and rotation based on direction
       switch (attackInfo.direction) {
         case "left":
           slash.setOrigin(0, 0.5);
