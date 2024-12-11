@@ -17,6 +17,7 @@ export interface SkeletonInfo {
 export interface AttackInfo {
   x: number;
   y: number;
+  direction: "left" | "right" | "up" | "down";
 }
 
 export class NetworkManager {

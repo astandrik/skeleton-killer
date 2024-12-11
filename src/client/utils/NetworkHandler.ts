@@ -101,11 +101,29 @@ export class NetworkHandler {
   private handlePlayerAttacked(attackInfo: AttackInfo) {
     try {
       console.log("Creating attack effect");
-      const slash = this.scene.add.sprite(
-        attackInfo.x,
-        attackInfo.y,
-        "swordSlash"
-      );
+      const slash = this.scene.add.sprite(attackInfo.x, attackInfo.y, "slash0");
+
+      // Set origin and rotation based on direction
+      switch (attackInfo.direction) {
+        case "left":
+          slash.setOrigin(0, 0.5);
+          slash.setAngle(0);
+          slash.setFlipX(true);
+          break;
+        case "right":
+          slash.setOrigin(0, 0.5);
+          slash.setAngle(0);
+          break;
+        case "up":
+          slash.setOrigin(0.5, 1);
+          slash.setAngle(-90);
+          break;
+        case "down":
+          slash.setOrigin(0.5, 0);
+          slash.setAngle(90);
+          break;
+      }
+
       slash.play("slash");
       slash.once("animationcomplete", () => {
         slash.destroy();
