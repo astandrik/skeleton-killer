@@ -1,0 +1,35 @@
+{
+  "name": "skeleton-killer",
+  "version": "1.0.0",
+  "description": "A multiplayer browser game where players fight skeletons",
+  "main": "dist/server/server.js",
+  "type": "module",
+  "scripts": {
+    "build:client": "esbuild src/client/scenes/MainScene.ts --bundle --format=iife --outfile=dist/client/bundle.js --platform=browser --target=es2020 --global-name=Game && cp src/client/index.html dist/client/",
+    "build:server": "tsc -p tsconfig.json",
+    "build": "rm -rf dist && mkdir -p dist/client/assets/sprites && npm run build:server && npm run build:client",
+    "start": "node dist/server/server.js",
+    "dev": "npm run build && nodemon --watch 'src/**/*.ts' --exec 'node --loader ts-node/esm' src/server/server.ts"
+  },
+  "keywords": [
+    "game",
+    "multiplayer",
+    "phaser",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "phaser": "^3.55.2",
+    "socket.io": "^4.4.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^16.11.7",
+    "esbuild": "^0.19.12",
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.4"
+  }
+}
