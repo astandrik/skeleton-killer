@@ -5,6 +5,7 @@ import {
   PhysicsComponent,
   NetworkComponent,
   HealthComponent,
+  CombatComponent,
 } from "../core/Component";
 import { InputComponent } from "../core/InputComponent";
 
@@ -50,6 +51,10 @@ export class Player extends Entity {
 
     // Add health component for all players
     this.addComponent(new HealthComponent(100));
+
+    // Add combat component for all players
+    // Parameters: attackRange: 50, attackDamage: 10, attackCooldown: 500ms
+    this.addComponent(new CombatComponent(50, 10, 500));
   }
 
   public update(delta: number): void {

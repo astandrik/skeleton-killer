@@ -1,4 +1,9 @@
-import { Component, NetworkComponent, PhysicsComponent } from "./Component";
+import {
+  Component,
+  NetworkComponent,
+  PhysicsComponent,
+  CombatComponent,
+} from "./Component";
 
 export class InputComponent extends Component {
   public readonly name = "input";
@@ -72,10 +77,11 @@ export class InputComponent extends Component {
   private handleAttack(): void {
     if (!this.entity) return;
 
-    const position = this.entity.getPosition();
-    let attackX = position.x;
-    let attackY = position.y;
+    const playerPos = this.entity.getPosition();
+    let attackX = playerPos.x;
+    let attackY = playerPos.y;
     const SPRITE_SIZE = 32;
+    const ATTACK_RANGE = 100; // Attack range in pixels
 
     // Position the attack based on direction
     switch (this.lastDirection) {
@@ -92,6 +98,29 @@ export class InputComponent extends Component {
         attackY += SPRITE_SIZE / 2;
         break;
     }
+
+    // Find nearby skeletons and attack them
+    const scene = this.entity["scene"];
+    scene.children.list.forEach((child) => {
+      if (child.getData("entityType") === "skeleton") {
+        const skeletonEntity = child.getData("entity");
+        if (skeletonEntity) {
+          const skeletonPos = skeletonEntity.getPosition();
+          const distance = Phaser.Math.Distance.Between(
+            playerPos.x,
+            playerPos.y,
+            skeletonPos.x,
+            skeletonPos.y
+          );
+
+          if (distance <= ATTACK_RANGE) {
+            // Call takeDamage directly on skeleton
+            skeletonEntity.takeDamage();
+            console.log("Attacking skeleton at distance:", distance);
+          }
+        }
+      }
+    });
 
     const network = this.entity.getComponent<NetworkComponent>("network");
     if (network) {

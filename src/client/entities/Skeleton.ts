@@ -5,6 +5,8 @@ import { HealthComponent } from "../core/Component";
 export class Skeleton extends Entity {
   constructor(scene: Scene, id: string, x: number, y: number) {
     super(scene, id, x, y, "skeleton");
+    this.sprite.setData("entityType", "skeleton");
+    this.sprite.setData("entity", this);
     this.setupComponents();
   }
 
@@ -19,12 +21,21 @@ export class Skeleton extends Entity {
       healthComponent.takeDamage(10);
     }
 
-    // Visual feedback
+    // Set red tint
+    this.sprite.setTint(0xff0000);
+
+    // Shake animation
     this.scene.tweens.add({
       targets: this.sprite,
-      alpha: 0.5,
-      duration: 100,
+      x: this.sprite.x + 5,
+      duration: 50,
       yoyo: true,
+      repeat: 2,
+      onComplete: () => {
+        // Reset position and tint after shake
+        this.sprite.setTint(0xffffff);
+        this.sprite.x = this.getPosition().x;
+      },
     });
   }
 
