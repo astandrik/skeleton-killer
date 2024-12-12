@@ -36,9 +36,23 @@ export const ASSETS_CONFIG: { [key: string]: EntityAssetConfig } = {
   },
   skeleton: {
     key: "skeleton",
-    scale: 1,
-    defaultTexture: "skeleton",
-    animations: [],
+    scale: 0.3,
+    animations: [
+      {
+        key: "skeleton_idle",
+        frameRate: 10,
+        repeat: -1,
+        frames: 12,
+        prefix: "assets/sprites/skeleton/idle",
+      },
+      {
+        key: "skeleton_walk",
+        frameRate: 12,
+        repeat: -1,
+        frames: 8,
+        prefix: "assets/sprites/skeleton/walk",
+      },
+    ],
   },
   // Add more entities here as needed
 };

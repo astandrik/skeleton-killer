@@ -63,21 +63,6 @@ export class AssetManager {
   }
 
   createDefaultTextures(): void {
-    // Create skeleton texture
-    const skeletonGraphics = this.scene.add.graphics();
-    skeletonGraphics.lineStyle(2, 0xcccccc);
-    skeletonGraphics.fillStyle(0xdddddd);
-    skeletonGraphics.beginPath();
-    skeletonGraphics.arc(16, 16, 12, 0, Math.PI * 2);
-    skeletonGraphics.closePath();
-    skeletonGraphics.strokePath();
-    skeletonGraphics.fillPath();
-    skeletonGraphics.fillStyle(0xff0000);
-    skeletonGraphics.fillCircle(12, 14, 2);
-    skeletonGraphics.fillCircle(20, 14, 2);
-    skeletonGraphics.generateTexture("skeleton", 32, 32);
-    skeletonGraphics.destroy();
-
     // Create slash textures
     for (let i = 0; i < 5; i++) {
       const graphics = this.scene.add.graphics();

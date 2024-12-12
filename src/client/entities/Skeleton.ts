@@ -12,6 +12,9 @@ export class Skeleton extends Entity {
     this.sprite.setData("entityType", "skeleton");
     this.sprite.setData("entity", this);
 
+    // Play idle animation by default
+    this.sprite.play("skeleton_idle");
+
     this.setupComponents();
   }
 
@@ -35,11 +38,13 @@ export class Skeleton extends Entity {
     }
   }
 
-  public takeDamage(): void {
+  public takeDamage(amount: number = 25): void {
     const healthComponent = this.getComponent<HealthComponent>("health");
     if (healthComponent) {
-      healthComponent.takeDamage(10);
-      console.log("Skeleton took damage! Health:", healthComponent.getHealth());
+      // Force set health to match server state
+      const newHealth = healthComponent.getHealth() - amount;
+      healthComponent.setHealth(newHealth);
+      console.log("Skeleton took damage! Health:", newHealth);
 
       // Set red tint
       this.sprite.setTint(0xff0000);
@@ -59,7 +64,7 @@ export class Skeleton extends Entity {
       });
 
       // Check if skeleton is dead
-      if (healthComponent.getHealth() <= 0) {
+      if (newHealth <= 0) {
         console.log("Skeleton died!");
         this.destroy();
       }
@@ -78,5 +83,31 @@ export class Skeleton extends Entity {
     this.components.forEach((component) => {
       component.update(delta);
     });
+
+    // Get physics body to check movement
+    if (this.sprite.body) {
+      const velocity = this.sprite.body.velocity;
+
+      // Switch animations based on movement
+      if (Math.abs(velocity.x) > 0.1 || Math.abs(velocity.y) > 0.1) {
+        if (
+          !this.sprite.anims.isPlaying ||
+          this.sprite.anims.currentAnim?.key !== "skeleton_walk"
+        ) {
+          this.sprite.play("skeleton_walk");
+        }
+        // Flip sprite based on movement direction
+        if (velocity.x !== 0) {
+          this.sprite.setFlipX(velocity.x < 0);
+        }
+      } else {
+        if (
+          !this.sprite.anims.isPlaying ||
+          this.sprite.anims.currentAnim?.key !== "skeleton_idle"
+        ) {
+          this.sprite.play("skeleton_idle");
+        }
+      }
+    }
   }
 }

@@ -6,6 +6,7 @@ import {
 } from "./NetworkManager";
 import { Player } from "../entities/Player";
 import { Skeleton } from "../entities/Skeleton";
+import { HealthComponent } from "../core/HealthComponent";
 
 export class NetworkHandler {
   private scene: Phaser.Scene;
@@ -13,7 +14,7 @@ export class NetworkHandler {
   private localPlayer?: Player;
   private otherPlayers: Map<string, Player>;
   private skeletons: Map<string, Skeleton>;
-  private readonly ATTACK_RANGE: number = 50;
+  private readonly ATTACK_RANGE: number = 200;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -109,7 +110,11 @@ export class NetworkHandler {
         skeleton.destroy();
         this.skeletons.delete(data.id);
       } else {
-        skeleton.takeDamage();
+        // Calculate damage based on health difference
+        const currentHealth =
+          skeleton.getComponent<HealthComponent>("health")?.getHealth() || 100;
+        const damage = currentHealth - data.health;
+        skeleton.takeDamage(damage);
       }
     }
   }

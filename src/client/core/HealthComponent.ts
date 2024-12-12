@@ -27,6 +27,10 @@ export class HealthComponent extends Component {
     return this.currentHealth;
   }
 
+  public setHealth(health: number): void {
+    this.currentHealth = Math.max(0, Math.min(this.maxHealth, health));
+  }
+
   public update(): void {
     // Health updates are event-driven
   }

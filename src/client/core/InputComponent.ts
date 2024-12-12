@@ -10,7 +10,7 @@ export class InputComponent extends Component {
   private attackKey: Phaser.Input.Keyboard.Key;
   private speed: number;
   private lastDirection: "left" | "right" | "up" | "down" = "right";
-  private readonly ATTACK_RANGE = 50;
+  private readonly ATTACK_RANGE = 200;
 
   constructor(
     cursors: Phaser.Types.Input.Keyboard.CursorKeys,
